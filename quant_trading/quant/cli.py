@@ -20,6 +20,11 @@ def build_parser() -> argparse.ArgumentParser:
                    help="strategy parameter, repeatable (e.g. --param fast=10)")
     p.add_argument("--short", action="store_true", help="allow short positions")
     p.add_argument("--capital", type=float, default=100_000.0)
+    p.add_argument("--commission-bps", type=float, default=1.0)
+    p.add_argument("--slippage-bps", type=float, default=2.0)
+    p.add_argument("--stop-loss", type=float, help="trailing stop, e.g. 0.1 for 10%%")
+    p.add_argument("--vol-target", type=float, help="annualised vol target, e.g. 0.15")
+    p.add_argument("--max-leverage", type=float, default=1.0)
     return p
 
 
@@ -48,7 +53,15 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     prices = load_csv(args.csv) if args.csv else generate_gbm_prices(args.days, seed=args.seed)
     strategy = make_strategy(args.strategy, allow_short=args.short, **parse_params(args.param))
-    result = Backtester(args.capital).run(prices, strategy)
+    backtester = Backtester(
+        initial_capital=args.capital,
+        commission_bps=args.commission_bps,
+        slippage_bps=args.slippage_bps,
+        stop_loss=args.stop_loss,
+        vol_target=args.vol_target,
+        max_leverage=args.max_leverage,
+    )
+    result = backtester.run(prices, strategy)
 
     bench_ret = result.benchmark.pct_change().fillna(0.0)
     bench = summarize(result.benchmark, bench_ret, bench_ret * 0 + 1)

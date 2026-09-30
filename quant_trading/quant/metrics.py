@@ -71,7 +71,8 @@ def summarize(equity: pd.Series, returns: pd.Series, positions: pd.Series) -> di
 
 
 def format_metrics(metrics: dict) -> str:
-    pct = {"total_return", "cagr", "volatility", "max_drawdown", "win_rate", "exposure"}
+    pct = {"total_return", "cagr", "volatility", "max_drawdown", "win_rate", "exposure",
+           "total_costs"}
     lines = []
     for k, v in metrics.items():
         lines.append(f"{k:>14}: {v:8.2%}" if k in pct else f"{k:>14}: {v:8.3f}")
