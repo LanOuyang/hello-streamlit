@@ -8,6 +8,7 @@ from dataclasses import dataclass
 import pandas as pd
 
 from .backtest import Backtester
+from .metrics import summarize
 from .strategies import make_strategy
 
 
@@ -65,7 +66,6 @@ def _evaluate_window(prices, start, strategy, backtester) -> dict:
     # restrict to the test window; the first test bar's return is already
     # driven by a signal formed on the last training bar, which is fine.
     mask = prices.index >= start
-    from .metrics import summarize
     returns = full.returns[mask]
     equity = backtester.initial_capital * (1 + returns).cumprod()
     equity = pd.concat([pd.Series([backtester.initial_capital],
