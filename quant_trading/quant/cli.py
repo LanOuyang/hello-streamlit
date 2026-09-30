@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import argparse
 
+import pandas as pd
+
 from .backtest import Backtester
 from .data import generate_gbm_prices, load_csv
 from .metrics import format_metrics, summarize
-from .optimize import grid_search
+from .optimize import METRIC_NAMES, grid_search
 from .strategies import STRATEGIES, make_strategy
 
 
@@ -30,7 +32,8 @@ def build_parser() -> argparse.ArgumentParser:
                    help="optimise a parameter over values (repeatable); "
                         "runs a train/test grid search instead of a single backtest")
     p.add_argument("--train-frac", type=float, default=0.7)
-    p.add_argument("--metric", default="sharpe", help="metric to maximise in grid search")
+    p.add_argument("--metric", default="sharpe", choices=sorted(METRIC_NAMES),
+                   help="metric to maximise in grid search")
     return p
 
 
@@ -83,7 +86,7 @@ def main(argv: list[str] | None = None) -> int:
     result = backtester.run(prices, strategy)
 
     bench_ret = result.benchmark.pct_change().fillna(0.0)
-    bench = summarize(result.benchmark, bench_ret, bench_ret * 0 + 1)
+    bench = summarize(result.benchmark, bench_ret, pd.Series(1.0, index=bench_ret.index))
     print(f"Strategy: {strategy}")
     print(f"Period: {prices.index[0].date()} -> {prices.index[-1].date()} ({len(prices)} bars)\n")
     print("== Strategy ==")

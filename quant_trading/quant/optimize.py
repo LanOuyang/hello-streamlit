@@ -9,6 +9,9 @@ import pandas as pd
 
 from .backtest import Backtester
 from .metrics import summarize
+
+METRIC_NAMES = {"total_return", "cagr", "volatility", "sharpe", "sortino", "max_drawdown",
+                "calmar", "win_rate", "exposure", "turnover", "total_costs"}
 from .strategies import make_strategy
 
 
@@ -40,6 +43,8 @@ def grid_search(prices: pd.DataFrame, strategy_name: str, grid: dict[str, list],
     """
     backtester = backtester or Backtester()
     fixed = fixed or {}
+    if metric not in METRIC_NAMES:
+        raise ValueError(f"unknown metric {metric!r}; choose from {sorted(METRIC_NAMES)}")
     train, test = split_train_test(prices, train_frac)
     keys = list(grid)
     rows = []

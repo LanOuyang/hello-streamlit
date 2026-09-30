@@ -30,6 +30,11 @@ def test_grid_search_no_valid_combos():
         grid_search(generate_gbm_prices(200), "sma_crossover", {"fast": [50], "slow": [10]})
 
 
+def test_grid_search_unknown_metric():
+    with pytest.raises(ValueError):
+        grid_search(generate_gbm_prices(200), "sma_crossover", {"fast": [5]}, metric="nope")
+
+
 def test_parse_grid():
     assert parse_grid(["fast=5,10", "num_std=1.5,2"]) == {"fast": [5, 10], "num_std": [1.5, 2]}
     with pytest.raises(SystemExit):

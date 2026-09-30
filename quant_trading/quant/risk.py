@@ -25,7 +25,8 @@ def volatility_target(positions: pd.Series, close: pd.Series, target_vol: float,
 
 def apply_stop_loss(positions: pd.Series, close: pd.Series, stop_loss: float) -> pd.Series:
     """Trailing stop: exit when price moves ``stop_loss`` against the best level
-    since entry. After a stop, stay flat until the raw signal changes."""
+    since entry. After a stop, stay flat until the signal's *side* changes
+    (to flat or the opposite direction); a same-side signal is not re-entered."""
     if not 0 < stop_loss < 1:
         raise ValueError("stop_loss must be in (0, 1)")
     pos = positions.to_numpy(dtype=float)

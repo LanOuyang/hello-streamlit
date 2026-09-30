@@ -64,7 +64,7 @@ python -m quant.cli --grid fast=5,10,20 --grid slow=50,100,200 --metric sharpe
 streamlit run app.py
 
 # Tests
-pip install pytest && python -m pytest -q
+pip install -r requirements-dev.txt && python -m pytest -q
 ```
 
 CSV files need a `date` column and a `close` column (case-insensitive;

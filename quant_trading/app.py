@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from quant.backtest import Backtester  # noqa: E402
 from quant.data import generate_gbm_prices, load_csv  # noqa: E402
 from quant.metrics import drawdown, summarize  # noqa: E402
-from quant.strategies import make_strategy  # noqa: E402
+from quant.strategies import STRATEGIES, make_strategy  # noqa: E402
 
 st.set_page_config(page_title="Quant Backtester", page_icon="📈", layout="wide")
 st.title("📈 Quant Trading Backtester")
@@ -29,7 +29,7 @@ else:
     prices = load_csv(upload)
 
 sb.header("Strategy")
-name = sb.selectbox("Strategy", ["sma_crossover", "momentum", "bollinger", "rsi"])
+name = sb.selectbox("Strategy", list(STRATEGIES))
 params = {"allow_short": sb.checkbox("Allow short")}
 if name == "sma_crossover":
     params["fast"] = sb.slider("Fast SMA", 2, 100, 20)
