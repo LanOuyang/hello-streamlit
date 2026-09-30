@@ -68,5 +68,5 @@ def test_metrics_basic():
 
 
 def test_cli_runs(capsys):
-    assert main(["--days", "300", "--fast", "5", "--slow", "20"]) == 0
+    assert main(["--days", "300", "--param", "fast=5", "--param", "slow=20"]) == 0
     assert "sharpe" in capsys.readouterr().out
